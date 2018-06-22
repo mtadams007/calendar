@@ -1,11 +1,40 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import Day from './Day/Day'
 import './App.css';
 
 class App extends Component {
   state = {
     monthNumber: 1,
-    days: {
+    events: [
+      'boo'
+    ]
+  }
+
+
+
+  componentDidMount() {
+    axios.get("http://localhost:9292/api/v1/events")
+      .then(function(response){
+      // console.log(response.data)
+      this.setState({events: response.data})
+      console.log("what i want",this.state.events)
+    }.bind(this))
+  }
+
+  getEvent = (month, day) => {
+    let eventArray = this.state.events
+    let length = eventArray.length
+    for(let i=0; i<length; i++) {
+      let date = eventArray[i].date
+      let eventMonth = date.substring(5,7)
+      let eventDay = date.substring(9,11)
+      console.log(parseInt(eventMonth,10))
+      console.log(parseInt(eventDay,10))
+      if(month === parseInt(eventMonth,10) && day === parseInt(eventDay,10)){
+      console.log('victory')
+        return eventArray[i].start
+      }
     }
   }
 
@@ -42,6 +71,7 @@ class App extends Component {
       dayNumber = -5
       numberOfWeeks = 6
     }
+    // this.getEvent(12)
     let rows = [];
 
     let dayClass;
@@ -54,9 +84,9 @@ class App extends Component {
         } else {
           dayClass = 'dayNumberDisplay'
         }
+        // let event = this.getEvent(this.state.monthNumber,dayNumber)
         days.push(
-
-          <Day dayClass={dayClass} dayNumber={dayNumber}/>);
+          <Day dayClass={dayClass} dayNumber={dayNumber} />)
           dayNumber++
       }
 
