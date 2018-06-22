@@ -4,7 +4,7 @@ import './App.css';
 
 class App extends Component {
   state = {
-    month: 'January',
+    monthNumber: 1,
     days: {
     }
   }
@@ -65,15 +65,60 @@ class App extends Component {
       return rows;
   }
 
+  previous = () => {
+    if (this.state.monthNumber === 1) {
+      this.setState({monthNumber: 12})
+    } else {
+      let newMonthNumber = this.state.monthNumber - 1
+      this.setState({monthNumber: newMonthNumber})
+    }
+  }
+
+  next = () => {
+    if (this.state.monthNumber === 12) {
+      this.setState({monthNumber: 1})
+    } else {
+      let newMonthNumber = this.state.monthNumber + 1
+      this.setState({monthNumber: newMonthNumber})
+    }
+  }
 
   render() {
+    let month;
+    if (this.state.monthNumber === 1){
+      month = "January"
+    } else if (this.state.monthNumber === 2){
+      month = "February"
+    } else if (this.state.monthNumber === 3){
+      month = "March"
+    } else if (this.state.monthNumber === 4){
+      month = "April"
+    } else if (this.state.monthNumber === 5){
+      month = "May"
+    } else if (this.state.monthNumber === 6){
+      month = "June"
+    } else if (this.state.monthNumber === 7){
+      month = "July"
+    } else if (this.state.monthNumber === 8){
+      month = "August"
+    } else if (this.state.monthNumber === 9){
+      month = "September"
+    } else if (this.state.monthNumber === 10){
+      month = "October"
+    } else if (this.state.monthNumber === 11){
+      month = "November"
+    } else if (this.state.monthNumber === 12){
+      month = "December"
+    }
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">{this.state.month} 2018</h1>
+          <h1 className="App-title">{month} 2018</h1>
+          <button className="switchMonth" onClick={this.previous}>Previous</button>
+          <button className="switchMonth" onClick={this.next}>Next</button>
         </header>
         <div>
-          {this.renderCalendar(12)}
+          {this.renderCalendar(this.state.monthNumber)}
         </div>
       </div>
     );
