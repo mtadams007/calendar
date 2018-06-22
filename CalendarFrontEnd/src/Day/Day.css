@@ -1,0 +1,32 @@
+.day {
+  width:10vw;
+  height: 15vh;
+  border: 1px solid black;
+  margin: 0;
+  font-size: 15px;
+  color: black;
+}
+
+.nonexistent {
+  color: transparent;
+  font-size: 15px;
+  width:10vw;
+  height: 15vh;
+
+}
+
+.dayNumberDisplay {
+  font-size: 15px;
+  width:10vw - 20px;
+  height: 15vh;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.eventText {
+  width:10vw;
+  height: 15vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
