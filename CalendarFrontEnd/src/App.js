@@ -6,6 +6,7 @@ import './App.css';
 class App extends Component {
   state = {
     monthNumber: 1,
+    isLoaded: false,
     events: [
       'boo'
     ]
@@ -17,7 +18,7 @@ class App extends Component {
     axios.get("http://localhost:9292/api/v1/events")
       .then(function(response){
       // console.log(response.data)
-      this.setState({events: response.data})
+      this.setState({events: response.data, isLoaded: true})
       console.log("what i want",this.state.events)
     }.bind(this))
   }
@@ -27,13 +28,13 @@ class App extends Component {
     let length = eventArray.length
     for(let i=0; i<length; i++) {
       let date = eventArray[i].date
-      let eventMonth = date.substring(5,7)
-      let eventDay = date.substring(9,11)
-      console.log(parseInt(eventMonth,10))
-      console.log(parseInt(eventDay,10))
-      if(month === parseInt(eventMonth,10) && day === parseInt(eventDay,10)){
-      console.log('victory')
-        return eventArray[i].start
+      if (date) {
+        let eventMonth = date.substring(5,7)
+        let eventDay = date.substring(9,11)
+        if(month === parseInt(eventMonth,10) && day === parseInt(eventDay,10)){
+          console.log('victory')
+          return eventArray[i].start
+        }
       }
     }
   }
@@ -84,9 +85,9 @@ class App extends Component {
         } else {
           dayClass = 'dayNumberDisplay'
         }
-        // let event = this.getEvent(this.state.monthNumber,dayNumber)
+        let event = this.getEvent(this.state.monthNumber,dayNumber)
         days.push(
-          <Day dayClass={dayClass} dayNumber={dayNumber} />)
+          <Day dayClass={dayClass} dayNumber={dayNumber} event={event} />)
           dayNumber++
       }
 
@@ -140,6 +141,12 @@ class App extends Component {
     } else if (this.state.monthNumber === 12){
       month = "December"
     }
+    if (!this.state.isLoaded){
+      console.log('waiting')
+      return (
+        <div>waiting</div>
+      );
+    } else {
     return (
       <div className="App">
         <header className="App-header">
@@ -152,6 +159,7 @@ class App extends Component {
         </div>
       </div>
     );
+  }
   }
 }
 
