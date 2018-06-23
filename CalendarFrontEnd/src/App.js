@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Day from './Day/Day'
+import EventForm from './EventForm/EventForm'
 import './App.css';
 
 class App extends Component {
@@ -149,14 +150,21 @@ class App extends Component {
     } else {
     return (
       <div className="App">
-        <header className="App-header">
+        <div className="grid">
+        <div className="header">
           <h1 className="App-title">{month} 2018</h1>
           <button className="switchMonth" onClick={this.previous}>Previous</button>
           <button className="switchMonth" onClick={this.next}>Next</button>
-        </header>
-        <div>
+        </div>
+        <div id="form">
+          <EventForm date="2018-12-29" />
+        </div>
+        <div className="content">
           {this.renderCalendar(this.state.monthNumber)}
         </div>
+        <div id="description">
+        </div>
+      </div>
       </div>
     );
   }

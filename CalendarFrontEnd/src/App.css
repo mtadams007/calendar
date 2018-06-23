@@ -2,16 +2,18 @@
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
+.header {
   background-color: #222;
   height: 10vh;
+  grid-column: 1/4;
   padding: 20px;
   color: white;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 6fr 2fr;
+  grid-template-rows: 1fr 5fr;
 }
 
 .App-title {
@@ -22,6 +24,9 @@
   font-size: large;
 }
 
+div {
+  /* border: 1px solid black; */
+}
 /* .weekRow {
   height: 10vh;
 } */
