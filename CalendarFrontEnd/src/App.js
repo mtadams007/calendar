@@ -9,8 +9,11 @@ class App extends Component {
     user: "Michael",
     monthNumber: 1,
     isLoaded: false,
+    start: '',
+    end: '',
+    description: '',
+    date: '',
     events: [
-      'boo'
     ]
   }
 
@@ -27,12 +30,12 @@ class App extends Component {
 
   addEvent = (event) => {
     event.preventDefault();
-
-
+    console.log(event)
+    console.log(this.state.start),
 
     axios.post("http://localhost:9292/api/v1/events", {
-      start: '17:13',
-      end: '18:44',
+      start: this.state.start,
+      end: this.state.end,
       date: '2018-12-25',
       description: "Christmas!"
    })
@@ -42,6 +45,19 @@ class App extends Component {
         console.log(response.data);
       })
   }
+
+  handleChangeStart = (event) => {
+    this.setState({start: event.target.value});
+  }
+  handleChangeEnd = (event) => {
+    this.setState({end: event.target.value});
+  }
+  handleChangeDescription = (event) => {
+    this.setState({description: event.target.value});
+  }
+  // handleChangeStart = (event) => {
+  //   this.setState({start: event.target.value});
+  // }
 
   getEvent = (month, day) => {
     let eventArray = this.state.events
@@ -178,7 +194,7 @@ class App extends Component {
           <button className="switchMonth" onClick={this.next}>Next</button>
         </div>
         <div id="form">
-          <EventForm date="2018-12-29" onSubmit={this.addEvent}/>
+          <EventForm date="2018-12-29" startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} onSubmit={this.addEvent}/>
         </div>
         <div className="content">
           {this.renderCalendar(this.state.monthNumber)}
