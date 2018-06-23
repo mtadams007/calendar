@@ -6,6 +6,7 @@ import './App.css';
 
 class App extends Component {
   state = {
+    user: "Michael",
     monthNumber: 1,
     isLoaded: false,
     events: [
@@ -24,6 +25,24 @@ class App extends Component {
     }.bind(this))
   }
 
+  addEvent = (event) => {
+    event.preventDefault();
+
+
+
+    axios.post("http://localhost:9292/api/v1/events", {
+      start: '17:13',
+      end: '18:44',
+      date: '2018-12-25',
+      description: "Christmas!"
+   })
+      .then(response => {
+        console.log('inside post request')
+        console.log(response);
+        console.log(response.data);
+      })
+  }
+
   getEvent = (month, day) => {
     let eventArray = this.state.events
     let length = eventArray.length
@@ -31,7 +50,9 @@ class App extends Component {
       let date = eventArray[i].date
       if (date) {
         let eventMonth = date.substring(5,7)
-        let eventDay = date.substring(9,11)
+
+        let eventDay = date.substring(8,10)
+        console.log(eventDay)
         if(month === parseInt(eventMonth,10) && day === parseInt(eventDay,10)){
           console.log('victory')
           return eventArray[i].start
@@ -157,7 +178,7 @@ class App extends Component {
           <button className="switchMonth" onClick={this.next}>Next</button>
         </div>
         <div id="form">
-          <EventForm date="2018-12-29" />
+          <EventForm date="2018-12-29" onSubmit={this.addEvent}/>
         </div>
         <div className="content">
           {this.renderCalendar(this.state.monthNumber)}
