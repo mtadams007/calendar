@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Day from './Day/Day'
 import EventForm from './EventForm/EventForm'
+import Event from './Event/Event'
 import './App.css';
 
 class App extends Component {
@@ -14,7 +15,9 @@ class App extends Component {
     end: '',
     description: '',
     date: '',
-    displayForm: false,
+    displayAddForm: false,
+    displayEditForm: false,
+    displayEvents: false,
     dayEvents: [
     ],
     events: [
@@ -102,10 +105,29 @@ class App extends Component {
     }
     return allEvents
   }
-  displayForm = (eventArray) => {
+
+  showDayEvents = (eventArray) => {
 
   }
+  displayForm = (eventArray) => {
+    this.setState({dayEvents: eventArray, displayAddForm: true, displayEvents: true})
+  }
 
+  renderEvents = (eventArray) => {
+    const length = eventArray.length
+    if (length === 0) {
+      return
+    }
+    let events = []
+    let i = 0
+    while(i<length){
+      events.push(
+        <Event title={eventArray[i].title} start={eventArray[i].start} end={eventArray[i].end} description={eventArray[i].description}/>
+      )
+      i++
+    }
+    return events
+  }
   renderCalendar = (month) => {
     // these are the most likely of the days and weeks so we hard code them here. this allows us to skip october and january
     let numberOfWeeks = 5
@@ -139,7 +161,7 @@ class App extends Component {
       dayNumber = -5
       numberOfWeeks = 6
     }
-    // this.getEvent(12)
+
     let rows = [];
 
     let dayClass;
@@ -153,9 +175,12 @@ class App extends Component {
           dayClass = 'dayNumberDisplay'
         }
         let events = this.getEvent(this.state.monthNumber,dayNumber)
-        let event = events[0].title
+        let event;
+        if (events.length>0){
+          event = events[0].title
+       }
         days.push(
-          <Day dayClass={dayClass} dayNumber={dayNumber} event={event} click={this.displayForm(events)}/>)
+          <Day dayClass={dayClass} dayNumber={dayNumber} event={event} click={()=>this.displayForm(events)}/>)
           dayNumber++
       }
 
@@ -186,6 +211,7 @@ class App extends Component {
     let month;
     let addForm;
     let editForm;
+    let eventList;
     if (this.state.monthNumber === 1){
       month = "January"
     } else if (this.state.monthNumber === 2){
@@ -211,9 +237,10 @@ class App extends Component {
     } else if (this.state.monthNumber === 12){
       month = "December"
     }
-    if (this.state.displayForm){
-      addForm = <div><EventForm date="2018-12-29" onSubmit={this.addEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
-      editForm = <div><EventForm date="2018-12-29" onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
+    if (this.state.displayAddForm){
+      eventList = this.renderEvents(this.state.dayEvents)
+      addForm = <div className="form"><EventForm date="2018-12-29" onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
+      editForm = <div className="form"><EventForm date="2018-12-29" onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
       <button onClick={this.deleteEvent}>DELETE</button></div>
     }
     if (!this.state.isLoaded){
@@ -230,13 +257,14 @@ class App extends Component {
           <button className="switchMonth" onClick={this.previous}>Previous</button>
           <button className="switchMonth" onClick={this.next}>Next</button>
         </div>
-        <div id="form">
-          {addForm}
+        <div id="eventList">
+          {eventList}
         </div>
         <div className="content">
           {this.renderCalendar(this.state.monthNumber)}
         </div>
-        <div id="description">
+        <div id="form">
+          {addForm}
           {editForm}
         </div>
       </div>
