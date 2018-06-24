@@ -27,7 +27,6 @@ class App extends Component {
   }
 
   update = () => {
-    console.log('updating')
     axios.get("http://localhost:9292/api/v1/events")
       .then(function(response){
       this.setState({events: response.data, displayAddForm:false, displayEditForm: false, displayEvents: false, isLoaded: true, update: false, description: '', start:'',end:'', title:''})
@@ -38,7 +37,6 @@ class App extends Component {
     axios.get("http://localhost:9292/api/v1/events")
       .then(function(response){
       this.setState({events: response.data, isLoaded: true})
-      console.log("what i want",this.state.events)
     }.bind(this))
   }
 
@@ -71,10 +69,8 @@ class App extends Component {
   }
 
   deleteEvent = (event) => {
-    console.log('clicked')
     axios.delete(`http://localhost:9292/api/v1/events/${this.state.eventId}`)
     .then(response => {
-      console.log('deleted',response)
     }).then(function(response){
     this.setState({update: true})
      }.bind(this))
@@ -185,8 +181,11 @@ class App extends Component {
 
         let events = this.getEvent(this.state.monthNumber,dayNumber)
         let event;
-        if (events.length>0){
-          event = events[0].title
+        let length = events.length
+        if (length>1){
+          event = `${events[0].title} + ${length-1} more events`
+       } else if (length === 1) {
+         event = events[0].title
        }
        let date = `2018-${this.state.monthNumber}-${dayNumber}`
        // this way we can't add events to days not on the month
@@ -224,7 +223,6 @@ class App extends Component {
   }
 
   render() {
-    console.log('render')
     if (this.state.update) {
       this.update()
     }
@@ -259,7 +257,6 @@ class App extends Component {
       month = "December"
     }
     if (this.state.displayAddForm){
-      console.log('adding')
       date = this.state.date
       eventList = this.renderEvents(this.state.dayEvents)
       addForm = <div className="form"><EventForm date={this.state.date} onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
@@ -271,7 +268,6 @@ class App extends Component {
       eventList = this.renderEvents(this.state.dayEvents)
     }
     if (!this.state.isLoaded){
-      console.log('waiting')
       return (
         <div>Loading...</div>
       );
