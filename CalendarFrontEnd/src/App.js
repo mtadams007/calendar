@@ -20,7 +20,7 @@ class App extends Component {
     displayEvents: false,
     update: false,
     eventId: 0,
-    showAllEvents: true,
+    showAllEvents: false,
     dayEvents: [
     ],
     events: [
