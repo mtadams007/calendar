@@ -257,7 +257,7 @@ class App extends Component {
       month = "December"
     }
     if (this.state.displayAddForm){
-      date = this.state.date
+      date = <h1>{this.state.date}</h1>
       eventList = this.renderEvents(this.state.dayEvents)
       addForm = <div className="form"><EventForm date={this.state.date} onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
 
