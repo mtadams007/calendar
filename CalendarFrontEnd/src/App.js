@@ -27,6 +27,7 @@ class App extends Component {
   }
 
   update = () => {
+    console.log('updating')
     axios.get("http://localhost:9292/api/v1/events")
       .then(function(response){
       this.setState({events: response.data, isLoaded: true, update: false})
@@ -227,6 +228,7 @@ class App extends Component {
     let addForm;
     let editForm;
     let eventList;
+    let date;
     if (this.state.monthNumber === 1){
       month = "January"
     } else if (this.state.monthNumber === 2){
@@ -253,12 +255,15 @@ class App extends Component {
       month = "December"
     }
     if (this.state.displayAddForm){
+      console.log('adding')
+      date = this.state.date
       eventList = this.renderEvents(this.state.dayEvents)
       addForm = <div className="form"><EventForm date={this.state.date} onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
 
     } else if (this.state.displayEditForm) {
       editForm = <div className="form"><EventForm date={this.state.date} onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
       <button onClick={this.deleteEvent}>DELETE</button></div>
+      date = <h1>{this.state.date}</h1>
       eventList = this.renderEvents(this.state.dayEvents)
     }
     if (!this.state.isLoaded){
@@ -276,6 +281,7 @@ class App extends Component {
           <button className="switchMonth" onClick={this.next}>Next</button>
         </div>
         <div id="eventList">
+          {date}
           {eventList}
         </div>
         <div className="content">
