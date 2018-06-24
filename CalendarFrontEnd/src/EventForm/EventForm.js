@@ -7,7 +7,7 @@ const eventForm = (props) => {
       <p>Title:</p>
       <input type="text" name="title" onChange={props.titleSubmit} value={props.title} maxLength='20' required></input>
       <p>Start:</p>
-      <input type="time" name="start" onChange={props.startSubmit} placeholder={props.start}></input>
+      <input type="time" name="start" onChange={props.startSubmit} value={props.start}></input>
       <p>End:</p>
       <input type="time" name="end" onChange={props.endSubmit} value={props.end}></input>
       <p>Description:</p>

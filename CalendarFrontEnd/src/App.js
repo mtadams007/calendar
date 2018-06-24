@@ -262,7 +262,7 @@ class App extends Component {
       addForm = <div className="form"><EventForm date={this.state.date} onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
 
     } else if (this.state.displayEditForm) {
-      editForm = <div className="form"><EventForm start={this.state.start} title={this.state.title} date={this.state.date} onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
+      editForm = <div className="form"><EventForm start={this.state.start} end={this.state.end} description={this.state.description} title={this.state.title} date={this.state.date} onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
       <button onClick={this.deleteEvent}>DELETE</button></div>
       date = <h1>{this.state.date}</h1>
       eventList = this.renderEvents(this.state.dayEvents)
