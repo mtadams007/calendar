@@ -30,7 +30,7 @@ class App extends Component {
     console.log('updating')
     axios.get("http://localhost:9292/api/v1/events")
       .then(function(response){
-      this.setState({events: response.data, isLoaded: true, update: false})
+      this.setState({events: response.data, displayAddForm:false, displayEditForm: false, displayEvents: false, isLoaded: true, update: false, description: '', start:'',end:'', title:''})
     }.bind(this))
   }
 
