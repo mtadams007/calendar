@@ -18,6 +18,7 @@ class App extends Component {
     displayAddForm: false,
     displayEditForm: false,
     displayEvents: false,
+    update: false,
     eventId: 0,
     dayEvents: [
     ],
@@ -25,12 +26,17 @@ class App extends Component {
     ]
   }
 
+  update = () => {
+    axios.get("http://localhost:9292/api/v1/events")
+      .then(function(response){
+      this.setState({events: response.data, displayAddForm:false, displayEditForm: false, displayEvents: false, isLoaded: true, update: false, description: '', start:'',end:'', title:''})
+    }.bind(this))
+  }
+
   componentDidMount() {
     axios.get("http://localhost:9292/api/v1/events")
       .then(function(response){
-      // console.log(response.data)
       this.setState({events: response.data, isLoaded: true})
-      console.log("what i want",this.state.events)
     }.bind(this))
   }
 
@@ -40,40 +46,34 @@ class App extends Component {
       start: this.state.start,
       end: this.state.end,
       title: this.state.title,
-      date: '2018-12-25',
+      date: this.state.date,
       description: this.state.description,
    })
-      .then(response => {
-        console.log('inside post request')
-        console.log(response);
-        console.log(response.data);
-        console.log(this.state.title)
-      })
+   .then(function(response){
+   this.setState({update: true})
+    }.bind(this))
   }
 
   editEvent = (event) => {
     event.preventDefault();
-    axios.put("http://localhost:9292/api/v1/events/2", {
+    axios.put(`http://localhost:9292/api/v1/events/${this.state.eventId}`, {
       start: this.state.start,
       end: this.state.end,
       title: this.state.title,
-      date: '2018-12-25',
-      description: this.state.description,
-   })
-      .then(response => {
-        console.log('inside post request')
-        console.log(response);
-        console.log(response.data);
-        console.log(this.state.title)
-      })
+      date: this.state.date,
+      description: this.state.description
+   }).then(function(response){
+   this.setState({update: true})
+    }.bind(this))
+
   }
 
   deleteEvent = (event) => {
-    console.log('clicked')
-    axios.delete("http://localhost:9292/api/v1/events/2")
+    axios.delete(`http://localhost:9292/api/v1/events/${this.state.eventId}`)
     .then(response => {
-      console.log('deleted',response)
-    })
+    }).then(function(response){
+    this.setState({update: true})
+     }.bind(this))
   }
 
   handleChangeStart = (event) => {
@@ -105,12 +105,13 @@ class App extends Component {
     return allEvents
   }
 
-  displayForm = (eventArray) => {
-    this.setState({dayEvents: eventArray, displayAddForm: true, displayEvents: true})
+  displayForm = (eventArray, date) => {
+    this.setState({dayEvents: eventArray, displayEditForm: false, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date})
   }
-  displayEditForm = (id) => {
-    this.setState({displayAddForm: false, displayEditForm: true, eventId: id})
+  displayEditForm = (id, title, start, end, description) => {
+    this.setState({displayAddForm: false, displayEditForm: true, eventId:id, title: title, start: start, end: end,description:description })
   }
+
   renderEvents = (eventArray) => {
     const length = eventArray.length
     if (length === 0) {
@@ -120,10 +121,13 @@ class App extends Component {
     let i = 0
     while(i<length){
       let id = eventArray[i].id
+      let title = eventArray[i].title
+      let start = eventArray[i].start
+      let end = eventArray[i].end
+      let description = eventArray[i].description
       events.push(
-        <div><Event title={eventArray[i].title} start={eventArray[i].start} end={eventArray[i].end} description={eventArray[i].description} click={() => this.displayEditForm(id)}/></div>
+        <div><Event title={eventArray[i].title} start={eventArray[i].start} end={eventArray[i].end} description={eventArray[i].description} click={() => this.displayEditForm(id,title,start,end,description)}/></div>
       )
-      console.log(eventArray[i].id)
       i++
     }
     return events
@@ -174,13 +178,24 @@ class App extends Component {
         } else {
           dayClass = 'dayNumberDisplay'
         }
+
         let events = this.getEvent(this.state.monthNumber,dayNumber)
         let event;
-        if (events.length>0){
-          event = events[0].title
+        let length = events.length
+        if (length>1){
+          event = `${events[0].title} + ${length-1} more events`
+       } else if (length === 1) {
+         event = events[0].title
        }
-        days.push(
-          <Day dayClass={dayClass} dayNumber={dayNumber} event={event} click={()=>this.displayForm(events)}/>)
+       let date = `2018-${this.state.monthNumber}-${dayNumber}`
+       // this way we can't add events to days not on the month
+       if (dayClass === 'nonexistent') {
+         days.push(
+           <Day dayClass={dayClass} dayNumber={dayNumber} event={event}/>)
+       } else {
+          days.push(
+            <Day dayClass={dayClass} dayNumber={dayNumber} event={event} click={()=>this.displayForm(events,date)}/>)
+          }
           dayNumber++
       }
 
@@ -208,10 +223,14 @@ class App extends Component {
   }
 
   render() {
+    if (this.state.update) {
+      this.update()
+    }
     let month;
     let addForm;
     let editForm;
     let eventList;
+    let date;
     if (this.state.monthNumber === 1){
       month = "January"
     } else if (this.state.monthNumber === 2){
@@ -238,16 +257,17 @@ class App extends Component {
       month = "December"
     }
     if (this.state.displayAddForm){
+      date = this.state.date
       eventList = this.renderEvents(this.state.dayEvents)
-      addForm = <div className="form"><EventForm date="2018-12-29" onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
+      addForm = <div className="form"><EventForm date={this.state.date} onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
 
     } else if (this.state.displayEditForm) {
-      editForm = <div className="form"><EventForm date="2018-12-29" onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
+      editForm = <div className="form"><EventForm start={this.state.start} title={this.state.title} date={this.state.date} onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
       <button onClick={this.deleteEvent}>DELETE</button></div>
+      date = <h1>{this.state.date}</h1>
       eventList = this.renderEvents(this.state.dayEvents)
     }
     if (!this.state.isLoaded){
-      console.log('waiting')
       return (
         <div>Loading...</div>
       );
@@ -261,6 +281,7 @@ class App extends Component {
           <button className="switchMonth" onClick={this.next}>Next</button>
         </div>
         <div id="eventList">
+          {date}
           {eventList}
         </div>
         <div className="content">
