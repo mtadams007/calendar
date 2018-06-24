@@ -3,12 +3,18 @@ import './EventForm.css';
 
 const eventForm = (props) => {
   return (
-    <form>
-      <input type="string" name="start"></input>
-      <input type="string" name="end"></input>
-      <input type="text" name="description"></input>
+    <form onSubmit={props.onSubmit}>
+      <p>Title:</p>
+      <input type="text" name="title" onChange={props.titleSubmit} value={props.titleValue}></input>
+      <p>Start:</p>
+      <input type="string" name="start" onChange={props.startSubmit} value={props.startValue}></input>
+      <p>End:</p>
+      <input type="string" name="end" onChange={props.endSubmit} value={props.endValue}></input>
+      <p>Description:</p>
+      <input type="text" name="description" onChange={props.descriptionSubmit} value={props.descriptionValue}></input>
       <input type="hidden" name="date" value={props.date}></input>
-      <input type="submit" value="Submit" id="changeMe"></input>
+      <br/>
+      <input type="submit" value={props.submitValue} id="addEvent"></input>
     </form>
   );
 }

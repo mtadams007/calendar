@@ -6,4 +6,4 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
-Event.create(start:'3:00', end:'4:00', description: "This is when Spotify hires Michael", date:"2018-1-3")
+Event.create(title: "Get Hired", start:'3:00', end:'4:00', description: "Spotify hires Michael", date:"2018-7-3")

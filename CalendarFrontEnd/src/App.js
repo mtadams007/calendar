@@ -2,18 +2,28 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Day from './Day/Day'
 import EventForm from './EventForm/EventForm'
+import Event from './Event/Event'
 import './App.css';
 
 class App extends Component {
   state = {
+    user: "Michael",
     monthNumber: 1,
     isLoaded: false,
+    title: '',
+    start: '',
+    end: '',
+    description: '',
+    date: '',
+    displayAddForm: false,
+    displayEditForm: false,
+    displayEvents: false,
+    eventId: 0,
+    dayEvents: [
+    ],
     events: [
-      'boo'
     ]
   }
-
-
 
   componentDidMount() {
     axios.get("http://localhost:9292/api/v1/events")
@@ -24,22 +34,100 @@ class App extends Component {
     }.bind(this))
   }
 
+  addEvent = (event) => {
+    event.preventDefault();
+    axios.post("http://localhost:9292/api/v1/events", {
+      start: this.state.start,
+      end: this.state.end,
+      title: this.state.title,
+      date: '2018-12-25',
+      description: this.state.description,
+   })
+      .then(response => {
+        console.log('inside post request')
+        console.log(response);
+        console.log(response.data);
+        console.log(this.state.title)
+      })
+  }
+
+  editEvent = (event) => {
+    event.preventDefault();
+    axios.put("http://localhost:9292/api/v1/events/2", {
+      start: this.state.start,
+      end: this.state.end,
+      title: this.state.title,
+      date: '2018-12-25',
+      description: this.state.description,
+   })
+      .then(response => {
+        console.log('inside post request')
+        console.log(response);
+        console.log(response.data);
+        console.log(this.state.title)
+      })
+  }
+
+  deleteEvent = (event) => {
+    console.log('clicked')
+    axios.delete("http://localhost:9292/api/v1/events/2")
+    .then(response => {
+      console.log('deleted',response)
+    })
+  }
+
+  handleChangeStart = (event) => {
+    this.setState({start: event.target.value});
+  }
+  handleChangeEnd = (event) => {
+    this.setState({end: event.target.value});
+  }
+  handleChangeTitle = (event) => {
+    this.setState({title: event.target.value});
+  }
+  handleChangeDescription = (event) => {
+    this.setState({description: event.target.value});
+  }
   getEvent = (month, day) => {
     let eventArray = this.state.events
     let length = eventArray.length
+    let allEvents = []
     for(let i=0; i<length; i++) {
       let date = eventArray[i].date
       if (date) {
         let eventMonth = date.substring(5,7)
-        let eventDay = date.substring(9,11)
+        let eventDay = date.substring(8,10)
         if(month === parseInt(eventMonth,10) && day === parseInt(eventDay,10)){
-          console.log('victory')
-          return eventArray[i].start
+          allEvents.push(eventArray[i])
         }
       }
     }
+    return allEvents
   }
 
+  displayForm = (eventArray) => {
+    this.setState({dayEvents: eventArray, displayAddForm: true, displayEvents: true})
+  }
+  displayEditForm = (id) => {
+    this.setState({displayAddForm: false, displayEditForm: true, eventId: id})
+  }
+  renderEvents = (eventArray) => {
+    const length = eventArray.length
+    if (length === 0) {
+      return
+    }
+    let events = []
+    let i = 0
+    while(i<length){
+      let id = eventArray[i].id
+      events.push(
+        <div><Event title={eventArray[i].title} start={eventArray[i].start} end={eventArray[i].end} description={eventArray[i].description} click={() => this.displayEditForm(id)}/></div>
+      )
+      console.log(eventArray[i].id)
+      i++
+    }
+    return events
+  }
   renderCalendar = (month) => {
     // these are the most likely of the days and weeks so we hard code them here. this allows us to skip october and january
     let numberOfWeeks = 5
@@ -73,7 +161,7 @@ class App extends Component {
       dayNumber = -5
       numberOfWeeks = 6
     }
-    // this.getEvent(12)
+
     let rows = [];
 
     let dayClass;
@@ -86,9 +174,13 @@ class App extends Component {
         } else {
           dayClass = 'dayNumberDisplay'
         }
-        let event = this.getEvent(this.state.monthNumber,dayNumber)
+        let events = this.getEvent(this.state.monthNumber,dayNumber)
+        let event;
+        if (events.length>0){
+          event = events[0].title
+       }
         days.push(
-          <Day dayClass={dayClass} dayNumber={dayNumber} event={event} />)
+          <Day dayClass={dayClass} dayNumber={dayNumber} event={event} click={()=>this.displayForm(events)}/>)
           dayNumber++
       }
 
@@ -117,6 +209,9 @@ class App extends Component {
 
   render() {
     let month;
+    let addForm;
+    let editForm;
+    let eventList;
     if (this.state.monthNumber === 1){
       month = "January"
     } else if (this.state.monthNumber === 2){
@@ -142,10 +237,19 @@ class App extends Component {
     } else if (this.state.monthNumber === 12){
       month = "December"
     }
+    if (this.state.displayAddForm){
+      eventList = this.renderEvents(this.state.dayEvents)
+      addForm = <div className="form"><EventForm date="2018-12-29" onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
+
+    } else if (this.state.displayEditForm) {
+      editForm = <div className="form"><EventForm date="2018-12-29" onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
+      <button onClick={this.deleteEvent}>DELETE</button></div>
+      eventList = this.renderEvents(this.state.dayEvents)
+    }
     if (!this.state.isLoaded){
       console.log('waiting')
       return (
-        <div>waiting</div>
+        <div>Loading...</div>
       );
     } else {
     return (
@@ -156,13 +260,15 @@ class App extends Component {
           <button className="switchMonth" onClick={this.previous}>Previous</button>
           <button className="switchMonth" onClick={this.next}>Next</button>
         </div>
-        <div id="form">
-          <EventForm date="2018-12-29" />
+        <div id="eventList">
+          {eventList}
         </div>
         <div className="content">
           {this.renderCalendar(this.state.monthNumber)}
         </div>
-        <div id="description">
+        <div id="form">
+          {addForm}
+          {editForm}
         </div>
       </div>
       </div>
