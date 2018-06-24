@@ -9,10 +9,12 @@ class App extends Component {
     user: "Michael",
     monthNumber: 1,
     isLoaded: false,
+    title: '',
     start: '',
     end: '',
     description: '',
     date: '',
+
     events: [
     ]
   }
@@ -30,19 +32,35 @@ class App extends Component {
 
   addEvent = (event) => {
     event.preventDefault();
-    console.log(event)
-    console.log(this.state.start),
-
     axios.post("http://localhost:9292/api/v1/events", {
       start: this.state.start,
       end: this.state.end,
+      title: this.state.title,
       date: '2018-12-25',
-      description: "Christmas!"
+      description: this.state.description,
    })
       .then(response => {
         console.log('inside post request')
         console.log(response);
         console.log(response.data);
+        console.log(this.state.title)
+      })
+  }
+
+  editEvent = (event) => {
+    event.preventDefault();
+    axios.put("http://localhost:9292/api/v1/events/2", {
+      start: this.state.start,
+      end: this.state.end,
+      title: this.state.title,
+      date: '2018-12-25',
+      description: this.state.description,
+   })
+      .then(response => {
+        console.log('inside post request')
+        console.log(response);
+        console.log(response.data);
+        console.log(this.state.title)
       })
   }
 
@@ -52,12 +70,13 @@ class App extends Component {
   handleChangeEnd = (event) => {
     this.setState({end: event.target.value});
   }
+  handleChangeTitle = (event) => {
+    this.setState({title: event.target.value});
+  }
   handleChangeDescription = (event) => {
     this.setState({description: event.target.value});
   }
-  // handleChangeStart = (event) => {
-  //   this.setState({start: event.target.value});
-  // }
+
 
   getEvent = (month, day) => {
     let eventArray = this.state.events
@@ -66,12 +85,9 @@ class App extends Component {
       let date = eventArray[i].date
       if (date) {
         let eventMonth = date.substring(5,7)
-
         let eventDay = date.substring(8,10)
-        console.log(eventDay)
         if(month === parseInt(eventMonth,10) && day === parseInt(eventDay,10)){
-          console.log('victory')
-          return eventArray[i].start
+          return eventArray[i].title
         }
       }
     }
@@ -194,12 +210,13 @@ class App extends Component {
           <button className="switchMonth" onClick={this.next}>Next</button>
         </div>
         <div id="form">
-          <EventForm date="2018-12-29" startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} onSubmit={this.addEvent}/>
+          <EventForm date="2018-12-29" onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
         </div>
         <div className="content">
           {this.renderCalendar(this.state.monthNumber)}
         </div>
         <div id="description">
+          <EventForm date="2018-12-29" onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
         </div>
       </div>
       </div>
