@@ -1,12 +1,24 @@
 .App {
   text-align: center;
 }
-
+body {
+  background-color: #1DB954;
+  color: #191414;
+}
 .header {
-  background-color: #222;
+  background-color: #191414;
   height: 10vh;
   grid-column: 1/4;
   padding: 20px;
+  color: white;
+}
+
+.dayName {
+  width:8vw;
+  display: inline-block;
+  border: 1px black solid;
+  margin: 0;
+  background-color: #191414;
   color: white;
 }
 
