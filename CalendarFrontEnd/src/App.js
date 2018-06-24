@@ -18,13 +18,12 @@ class App extends Component {
     displayAddForm: false,
     displayEditForm: false,
     displayEvents: false,
+    eventId: 0,
     dayEvents: [
     ],
     events: [
     ]
   }
-
-
 
   componentDidMount() {
     axios.get("http://localhost:9292/api/v1/events")
@@ -106,13 +105,12 @@ class App extends Component {
     return allEvents
   }
 
-  showDayEvents = (eventArray) => {
-
-  }
   displayForm = (eventArray) => {
     this.setState({dayEvents: eventArray, displayAddForm: true, displayEvents: true})
   }
-
+  displayEditForm = (id) => {
+    this.setState({displayAddForm: false, displayEditForm: true, eventId: id})
+  }
   renderEvents = (eventArray) => {
     const length = eventArray.length
     if (length === 0) {
@@ -121,9 +119,11 @@ class App extends Component {
     let events = []
     let i = 0
     while(i<length){
+      let id = eventArray[i].id
       events.push(
-        <Event title={eventArray[i].title} start={eventArray[i].start} end={eventArray[i].end} description={eventArray[i].description}/>
+        <div><Event title={eventArray[i].title} start={eventArray[i].start} end={eventArray[i].end} description={eventArray[i].description} click={() => this.displayEditForm(id)}/></div>
       )
+      console.log(eventArray[i].id)
       i++
     }
     return events
@@ -240,8 +240,11 @@ class App extends Component {
     if (this.state.displayAddForm){
       eventList = this.renderEvents(this.state.dayEvents)
       addForm = <div className="form"><EventForm date="2018-12-29" onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
+
+    } else if (this.state.displayEditForm) {
       editForm = <div className="form"><EventForm date="2018-12-29" onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
       <button onClick={this.deleteEvent}>DELETE</button></div>
+      eventList = this.renderEvents(this.state.dayEvents)
     }
     if (!this.state.isLoaded){
       console.log('waiting')
