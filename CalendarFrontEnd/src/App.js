@@ -20,6 +20,7 @@ class App extends Component {
     displayEvents: false,
     update: false,
     eventId: 0,
+    showAllEvents: true,
     dayEvents: [
     ],
     events: [
@@ -75,6 +76,9 @@ class App extends Component {
     this.setState({update: true})
      }.bind(this))
   }
+  showAllEvents = (event) => {
+    this.setState({showAllEvents:!this.state.showAllEvents})
+  }
 
   handleChangeStart = (event) => {
     this.setState({start: event.target.value});
@@ -106,10 +110,10 @@ class App extends Component {
   }
 
   displayForm = (eventArray, date) => {
-    this.setState({dayEvents: eventArray, displayEditForm: false, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date})
+    this.setState({dayEvents: eventArray, displayEditForm: false, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date, showAllEvents:false})
   }
-  displayEditForm = (id, title, start, end, description) => {
-    this.setState({displayAddForm: false, displayEditForm: true, eventId:id, title: title, start: start, end: end,description:description })
+  displayEditForm = (id, title, start, end, description, date) => {
+    this.setState({displayAddForm: false, displayEditForm: true, eventId:id, title: title, start: start, end: end,description:description, date: date })
   }
 
   renderEvents = (eventArray) => {
@@ -125,8 +129,9 @@ class App extends Component {
       let start = eventArray[i].start
       let end = eventArray[i].end
       let description = eventArray[i].description
+      let date = eventArray[i].date
       events.push(
-        <div><Event title={eventArray[i].title} start={eventArray[i].start} end={eventArray[i].end} description={eventArray[i].description} click={() => this.displayEditForm(id,title,start,end,description)}/></div>
+        <div><Event title={title} start={start} end={end} description={description} date={date} click={() => this.displayEditForm(id,title,start,end,description,date)}/></div>
       )
       i++
     }
@@ -226,6 +231,7 @@ class App extends Component {
     if (this.state.update) {
       this.update()
     }
+    let showHideButton;
     let month;
     let addForm;
     let editForm;
@@ -256,6 +262,12 @@ class App extends Component {
     } else if (this.state.monthNumber === 12){
       month = "December"
     }
+    if (this.state.showAllEvents && !this.state.displayEvents){
+      showHideButton = <button onClick={this.showAllEvents}>Hide All Events</button>
+      eventList = this.renderEvents(this.state.events)
+    } else if (!this.state.showAllEvents && !this.state.displayEvents) {
+      showHideButton = <button onClick={this.showAllEvents}>Show All Events</button>
+    }
     if (this.state.displayAddForm){
       date = <h1>{this.state.date}</h1>
       eventList = this.renderEvents(this.state.dayEvents)
@@ -281,6 +293,7 @@ class App extends Component {
           <button className="switchMonth" onClick={this.next}>Next</button>
         </div>
         <div id="eventList">
+          {showHideButton}
           {date}
           {eventList}
         </div>

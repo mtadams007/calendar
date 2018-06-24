@@ -16,7 +16,7 @@ body {
 .dayName {
   width:8vw;
   display: inline-block;
-  border: 1px black solid;
+  border: 1px #191414 solid;
   margin: 0;
   background-color: #191414;
   color: white;
@@ -37,6 +37,9 @@ body {
 }
 
 .form {
-  border: 1px solid black;
+  /* border: 1px solid #191414; */
+  padding: 1em;
   margin: 1.5em;
+  background-color: #191414;
+  color: white;
 }
