@@ -14,7 +14,9 @@ class App extends Component {
     end: '',
     description: '',
     date: '',
-
+    displayForm: false,
+    dayEvents: [
+    ],
     events: [
     ]
   }
@@ -64,6 +66,14 @@ class App extends Component {
       })
   }
 
+  deleteEvent = (event) => {
+    console.log('clicked')
+    axios.delete("http://localhost:9292/api/v1/events/2")
+    .then(response => {
+      console.log('deleted',response)
+    })
+  }
+
   handleChangeStart = (event) => {
     this.setState({start: event.target.value});
   }
@@ -76,21 +86,24 @@ class App extends Component {
   handleChangeDescription = (event) => {
     this.setState({description: event.target.value});
   }
-
-
   getEvent = (month, day) => {
     let eventArray = this.state.events
     let length = eventArray.length
+    let allEvents = []
     for(let i=0; i<length; i++) {
       let date = eventArray[i].date
       if (date) {
         let eventMonth = date.substring(5,7)
         let eventDay = date.substring(8,10)
         if(month === parseInt(eventMonth,10) && day === parseInt(eventDay,10)){
-          return eventArray[i].title
+          allEvents.push(eventArray[i])
         }
       }
     }
+    return allEvents
+  }
+  displayForm = (eventArray) => {
+
   }
 
   renderCalendar = (month) => {
@@ -139,9 +152,10 @@ class App extends Component {
         } else {
           dayClass = 'dayNumberDisplay'
         }
-        let event = this.getEvent(this.state.monthNumber,dayNumber)
+        let events = this.getEvent(this.state.monthNumber,dayNumber)
+        let event = events[0].title
         days.push(
-          <Day dayClass={dayClass} dayNumber={dayNumber} event={event} />)
+          <Day dayClass={dayClass} dayNumber={dayNumber} event={event} click={this.displayForm(events)}/>)
           dayNumber++
       }
 
@@ -170,6 +184,8 @@ class App extends Component {
 
   render() {
     let month;
+    let addForm;
+    let editForm;
     if (this.state.monthNumber === 1){
       month = "January"
     } else if (this.state.monthNumber === 2){
@@ -195,10 +211,15 @@ class App extends Component {
     } else if (this.state.monthNumber === 12){
       month = "December"
     }
+    if (this.state.displayForm){
+      addForm = <div><EventForm date="2018-12-29" onSubmit={this.addEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
+      editForm = <div><EventForm date="2018-12-29" onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
+      <button onClick={this.deleteEvent}>DELETE</button></div>
+    }
     if (!this.state.isLoaded){
       console.log('waiting')
       return (
-        <div>waiting</div>
+        <div>Loading...</div>
       );
     } else {
     return (
@@ -210,13 +231,13 @@ class App extends Component {
           <button className="switchMonth" onClick={this.next}>Next</button>
         </div>
         <div id="form">
-          <EventForm date="2018-12-29" onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
+          {addForm}
         </div>
         <div className="content">
           {this.renderCalendar(this.state.monthNumber)}
         </div>
         <div id="description">
-          <EventForm date="2018-12-29" onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
+          {editForm}
         </div>
       </div>
       </div>
