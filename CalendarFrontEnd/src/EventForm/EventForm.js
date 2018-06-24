@@ -5,13 +5,13 @@ const eventForm = (props) => {
   return (
     <form onSubmit={props.onSubmit}>
       <p>Title:</p>
-      <input type="text" name="title" onChange={props.titleSubmit} value={props.titleValue}></input>
+      <input type="text" name="title" onChange={props.titleSubmit} value={props.title}></input>
       <p>Start:</p>
-      <input type="string" name="start" onChange={props.startSubmit} value={props.startValue}></input>
+      <input type="string" name="start" onChange={props.startSubmit} value={props.start}></input>
       <p>End:</p>
-      <input type="string" name="end" onChange={props.endSubmit} value={props.endValue}></input>
+      <input type="string" name="end" onChange={props.endSubmit} value={props.end}></input>
       <p>Description:</p>
-      <input type="text" name="description" onChange={props.descriptionSubmit} value={props.descriptionValue}></input>
+      <input type="text" name="description" onChange={props.descriptionSubmit} value={props.description}></input>
       <input type="hidden" name="date" value={props.date}></input>
       <br/>
       <input type="submit" value={props.submitValue} id="addEvent"></input>

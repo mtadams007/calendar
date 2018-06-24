@@ -18,6 +18,7 @@ class App extends Component {
     displayAddForm: false,
     displayEditForm: false,
     displayEvents: false,
+    update: false,
     eventId: 0,
     dayEvents: [
     ],
@@ -25,10 +26,16 @@ class App extends Component {
     ]
   }
 
+  update = () => {
+    axios.get("http://localhost:9292/api/v1/events")
+      .then(function(response){
+      this.setState({events: response.data, isLoaded: true, update: false})
+    }.bind(this))
+  }
+
   componentDidMount() {
     axios.get("http://localhost:9292/api/v1/events")
       .then(function(response){
-      // console.log(response.data)
       this.setState({events: response.data, isLoaded: true})
       console.log("what i want",this.state.events)
     }.bind(this))
@@ -40,40 +47,36 @@ class App extends Component {
       start: this.state.start,
       end: this.state.end,
       title: this.state.title,
-      date: '2018-12-25',
+      date: this.state.date,
       description: this.state.description,
    })
-      .then(response => {
-        console.log('inside post request')
-        console.log(response);
-        console.log(response.data);
-        console.log(this.state.title)
-      })
+   .then(function(response){
+   this.setState({update: true})
+    }.bind(this))
   }
 
   editEvent = (event) => {
     event.preventDefault();
-    axios.put("http://localhost:9292/api/v1/events/2", {
+    axios.put(`http://localhost:9292/api/v1/events/${this.state.eventId}`, {
       start: this.state.start,
       end: this.state.end,
       title: this.state.title,
-      date: '2018-12-25',
-      description: this.state.description,
-   })
-      .then(response => {
-        console.log('inside post request')
-        console.log(response);
-        console.log(response.data);
-        console.log(this.state.title)
-      })
+      date: this.state.date,
+      description: this.state.description
+   }).then(function(response){
+   this.setState({update: true})
+    }.bind(this))
+
   }
 
   deleteEvent = (event) => {
     console.log('clicked')
-    axios.delete("http://localhost:9292/api/v1/events/2")
+    axios.delete(`http://localhost:9292/api/v1/events/${this.state.eventId}`)
     .then(response => {
       console.log('deleted',response)
-    })
+    }).then(function(response){
+    this.setState({update: true})
+     }.bind(this))
   }
 
   handleChangeStart = (event) => {
@@ -105,12 +108,13 @@ class App extends Component {
     return allEvents
   }
 
-  displayForm = (eventArray) => {
-    this.setState({dayEvents: eventArray, displayAddForm: true, displayEvents: true})
+  displayForm = (eventArray, date) => {
+    this.setState({dayEvents: eventArray, displayEditForm: false, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date})
   }
-  displayEditForm = (id) => {
-    this.setState({displayAddForm: false, displayEditForm: true, eventId: id})
+  displayEditForm = (id, date) => {
+    this.setState({displayAddForm: false, displayEditForm: true, eventId: id, })
   }
+
   renderEvents = (eventArray) => {
     const length = eventArray.length
     if (length === 0) {
@@ -123,7 +127,6 @@ class App extends Component {
       events.push(
         <div><Event title={eventArray[i].title} start={eventArray[i].start} end={eventArray[i].end} description={eventArray[i].description} click={() => this.displayEditForm(id)}/></div>
       )
-      console.log(eventArray[i].id)
       i++
     }
     return events
@@ -174,13 +177,15 @@ class App extends Component {
         } else {
           dayClass = 'dayNumberDisplay'
         }
+
         let events = this.getEvent(this.state.monthNumber,dayNumber)
         let event;
         if (events.length>0){
           event = events[0].title
        }
+       let date = `2018-${this.state.monthNumber}-${dayNumber}`
         days.push(
-          <Day dayClass={dayClass} dayNumber={dayNumber} event={event} click={()=>this.displayForm(events)}/>)
+          <Day dayClass={dayClass} dayNumber={dayNumber} event={event} click={()=>this.displayForm(events,date)}/>)
           dayNumber++
       }
 
@@ -208,6 +213,10 @@ class App extends Component {
   }
 
   render() {
+    console.log('render')
+    if (this.state.update) {
+      this.update()
+    }
     let month;
     let addForm;
     let editForm;
@@ -239,10 +248,10 @@ class App extends Component {
     }
     if (this.state.displayAddForm){
       eventList = this.renderEvents(this.state.dayEvents)
-      addForm = <div className="form"><EventForm date="2018-12-29" onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
+      addForm = <div className="form"><EventForm date={this.state.date} onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
 
     } else if (this.state.displayEditForm) {
-      editForm = <div className="form"><EventForm date="2018-12-29" onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
+      editForm = <div className="form"><EventForm date={this.state.date} onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
       <button onClick={this.deleteEvent}>DELETE</button></div>
       eventList = this.renderEvents(this.state.dayEvents)
     }
