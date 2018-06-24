@@ -112,8 +112,8 @@ class App extends Component {
   displayForm = (eventArray, date) => {
     this.setState({dayEvents: eventArray, displayEditForm: false, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date})
   }
-  displayEditForm = (id, date) => {
-    this.setState({displayAddForm: false, displayEditForm: true, eventId: id, })
+  displayEditForm = (id, title, start, end, description) => {
+    this.setState({displayAddForm: false, displayEditForm: true, eventId:id, title: title, start: start, end: end,description:description })
   }
 
   renderEvents = (eventArray) => {
@@ -125,8 +125,12 @@ class App extends Component {
     let i = 0
     while(i<length){
       let id = eventArray[i].id
+      let title = eventArray[i].title
+      let start = eventArray[i].start
+      let end = eventArray[i].end
+      let description = eventArray[i].description
       events.push(
-        <div><Event title={eventArray[i].title} start={eventArray[i].start} end={eventArray[i].end} description={eventArray[i].description} click={() => this.displayEditForm(id)}/></div>
+        <div><Event title={eventArray[i].title} start={eventArray[i].start} end={eventArray[i].end} description={eventArray[i].description} click={() => this.displayEditForm(id,title,start,end,description)}/></div>
       )
       i++
     }
@@ -261,7 +265,7 @@ class App extends Component {
       addForm = <div className="form"><EventForm date={this.state.date} onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
 
     } else if (this.state.displayEditForm) {
-      editForm = <div className="form"><EventForm date={this.state.date} onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
+      editForm = <div className="form"><EventForm start={this.state.start} title={this.state.title} date={this.state.date} onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
       <button onClick={this.deleteEvent}>DELETE</button></div>
       date = <h1>{this.state.date}</h1>
       eventList = this.renderEvents(this.state.dayEvents)
