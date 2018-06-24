@@ -184,8 +184,14 @@ class App extends Component {
           event = events[0].title
        }
        let date = `2018-${this.state.monthNumber}-${dayNumber}`
-        days.push(
-          <Day dayClass={dayClass} dayNumber={dayNumber} event={event} click={()=>this.displayForm(events,date)}/>)
+       // this way we can't add events to days not on the month
+       if (dayClass === 'nonexistent') {
+         days.push(
+           <Day dayClass={dayClass} dayNumber={dayNumber} event={event}/>)
+       } else {
+          days.push(
+            <Day dayClass={dayClass} dayNumber={dayNumber} event={event} click={()=>this.displayForm(events,date)}/>)
+          }
           dayNumber++
       }
 
