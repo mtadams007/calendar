@@ -3,6 +3,7 @@ import axios from 'axios';
 import Day from './Day/Day'
 import EventForm from './EventForm/EventForm'
 import Event from './Event/Event'
+import MonthButton from './MonthButton/MonthButton'
 import './App.css';
 
 class App extends Component {
@@ -53,7 +54,7 @@ class App extends Component {
       description: this.state.description,
    })
    .then(function(response){
-   this.setState({update: true})
+   this.setState({update: true, isHighlight:false})
     }.bind(this))
   }
 
@@ -66,7 +67,7 @@ class App extends Component {
       date: this.state.date,
       description: this.state.description
    }).then(function(response){
-   this.setState({update: true})
+   this.setState({update: true, isHighlight:false})
     }.bind(this))
 
   }
@@ -75,11 +76,18 @@ class App extends Component {
     axios.delete(`http://localhost:9292/api/v1/events/${this.state.eventId}`)
     .then(response => {
     }).then(function(response){
-    this.setState({update: true})
+    this.setState({update: true, isHighlight:false})
      }.bind(this))
   }
   showAllEvents = (event) => {
     this.setState({showAllEvents:!this.state.showAllEvents})
+  }
+  changeMonth = (monthNumber) => {
+    let element = document.getElementsByClassName('highlight');
+    if (element.length != 0) {
+      element[0].classList.remove("highlight")
+    }
+    this.setState({monthNumber: monthNumber, isHighlight: false})
   }
 
   handleChangeStart = (event) => {
@@ -218,20 +226,29 @@ class App extends Component {
   }
 
   previous = () => {
+    let element = document.getElementsByClassName('highlight');
+    if (element.length != 0) {
+      element[0].classList.remove("highlight")
+    }
     if (this.state.monthNumber === 1) {
-      this.setState({monthNumber: 12})
+      this.setState({monthNumber: 12, isHighlight: false})
     } else {
       let newMonthNumber = this.state.monthNumber - 1
-      this.setState({monthNumber: newMonthNumber})
+      this.setState({monthNumber: newMonthNumber, isHighlight: false})
     }
   }
 
   next = () => {
+    let element = document.getElementsByClassName('highlight');
+    if (element.length != 0) {
+
+      element[0].classList.remove("highlight")
+    }
     if (this.state.monthNumber === 12) {
-      this.setState({monthNumber: 1})
+      this.setState({monthNumber: 1, isHighlight: false})
     } else {
       let newMonthNumber = this.state.monthNumber + 1
-      this.setState({monthNumber: newMonthNumber})
+      this.setState({monthNumber: newMonthNumber, isHighlight: false})
     }
   }
 
@@ -239,12 +256,13 @@ class App extends Component {
     if (this.state.update) {
       this.update()
     }
+    let elementToRemove = document.getElementsByClassName('highlight');
     if (this.state.isHighlight) {
       let element = document.getElementById(this.state.dateToHighlight);
       element.classList.add("highlight")
-    } else if (this.state.dateToHighlight != '') {
-      let element = document.getElementsByClassName('highlight');
-      element[0].classList.remove("highlight")
+    }
+    else if (elementToRemove.length != 0) {
+      elementToRemove[0].classList.remove("highlight")
     }
     let showHideButton;
     let month;
@@ -306,9 +324,24 @@ class App extends Component {
       <div className="App">
         <div className="grid">
         <div className="header">
+          <div id="monthButtonArray">
+            <MonthButton monthName="January" click={()=>this.changeMonth(1)}/>
+            <MonthButton monthName="February" click={()=>this.changeMonth(2)}/>
+            <MonthButton monthName="March" click={()=>this.changeMonth(3)}/>
+            <MonthButton monthName="April" click={()=>this.changeMonth(4)}/>
+            <MonthButton monthName="May" click={()=>this.changeMonth(5)}/>
+            <MonthButton monthName="June" click={()=>this.changeMonth(6)}/>
+            <MonthButton monthName="July" click={()=>this.changeMonth(7)}/>
+            <MonthButton monthName="August" click={()=>this.changeMonth(8)}/>
+            <MonthButton monthName="September" click={()=>this.changeMonth(9)}/>
+            <MonthButton monthName="October" click={()=>this.changeMonth(10)}/>
+            <MonthButton monthName="November" click={()=>this.changeMonth(11)}/>
+            <MonthButton monthName="December" click={()=>this.changeMonth(12)}/>
+          </div>
           <h1 className="App-title">{month} 2018</h1>
           <button className="switchMonth" onClick={this.previous}>Previous</button>
           <button className="switchMonth" onClick={this.next}>Next</button>
+
         </div>
         <div class="content">
           {showHideButton}
