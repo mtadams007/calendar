@@ -37,7 +37,7 @@ class App extends Component {
     }.bind(this))
   }
 
-  api = 'http://localhost:9292/api/v1/events/'
+  api = 'https://michael-calendar.herokuapp.com/api/v1/events'
 
   componentDidMount() {
     axios.get(this.api)
@@ -62,7 +62,7 @@ class App extends Component {
 
   editEvent = (event) => {
     event.preventDefault();
-    axios.put(this.api+`${this.state.eventId}`, {
+    axios.put(`${this.api}/${this.state.eventId}`, {
       start: this.state.start,
       end: this.state.end,
       title: this.state.title,
@@ -75,7 +75,7 @@ class App extends Component {
   }
 
   deleteEvent = (event) => {
-    axios.delete(this.api+`${this.state.eventId}`)
+    axios.delete(this.api+'/'+this.state.eventId)
     .then(response => {
     }).then(function(response){
     this.setState({update: true, isHighlight:false})
@@ -89,7 +89,7 @@ class App extends Component {
     if (element.length != 0) {
       element[0].classList.remove("highlight")
     }
-    this.setState({monthNumber: monthNumber, isHighlight: false})
+    this.setState({monthNumber: monthNumber, isHighlight: false, displayAddForm: false, displayEvents: false })
   }
 
   handleChangeStart = (event) => {
@@ -122,10 +122,6 @@ class App extends Component {
   }
 
   displayForm = (eventArray, date, highlight) => {
-    // let newHighlight
-    // if (this.state.isHighlight) {
-    //   newHighlight
-    // }
     this.setState({dayEvents: eventArray, displayEditForm: false, isHighlight: !this.state.isHighlight, dateToHighlight:highlight, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date, showAllEvents:false, description:'', title:'', start:'', end:''})
   }
   displayEditForm = (id, title, start, end, description, date) => {
@@ -200,8 +196,6 @@ class App extends Component {
           dayClass = 'dayNumberDisplay'
         }
         let highlight = `a${dayNumber}`
-        console.log(highlight)
-
         let events = this.getEvent(this.state.monthNumber,dayNumber)
         let event;
         let length = events.length
@@ -233,24 +227,23 @@ class App extends Component {
       element[0].classList.remove("highlight")
     }
     if (this.state.monthNumber === 1) {
-      this.setState({monthNumber: 12, isHighlight: false})
+      this.setState({monthNumber: 12, isHighlight: false, displayAddForm: false, displayEvents: false})
     } else {
       let newMonthNumber = this.state.monthNumber - 1
-      this.setState({monthNumber: newMonthNumber, isHighlight: false})
+      this.setState({monthNumber: newMonthNumber, isHighlight: false, displayAddForm: false, displayEvents: false})
     }
   }
 
   next = () => {
     let element = document.getElementsByClassName('highlight');
     if (element.length != 0) {
-
       element[0].classList.remove("highlight")
     }
     if (this.state.monthNumber === 12) {
-      this.setState({monthNumber: 1, isHighlight: false})
+      this.setState({monthNumber: 1, isHighlight: false, displayAddForm: false, displayEvents: false})
     } else {
       let newMonthNumber = this.state.monthNumber + 1
-      this.setState({monthNumber: newMonthNumber, isHighlight: false})
+      this.setState({monthNumber: newMonthNumber, isHighlight: false, displayAddForm: false, displayEvents: false})
     }
   }
 
