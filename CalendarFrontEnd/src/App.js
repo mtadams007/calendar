@@ -30,7 +30,7 @@ class App extends Component {
   update = () => {
     axios.get("http://localhost:9292/api/v1/events")
       .then(function(response){
-      this.setState({events: response.data, displayAddForm:false, displayEditForm: false, displayEvents: false, isLoaded: true, update: false, description: '', start:'',end:'', title:'', showAllEvents: false})
+      this.setState({events: response.data, displayAddForm:false, displayEditForm: false, displayEvents: false, isLoaded: true, update: false, description: '', start:'',end:'', title:''})
     }.bind(this))
   }
 
@@ -110,10 +110,10 @@ class App extends Component {
   }
 
   displayForm = (eventArray, date) => {
-    this.setState({dayEvents: eventArray, displayEditForm: false, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date, showAllEvents:false})
+    this.setState({dayEvents: eventArray, displayEditForm: false, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date, showAllEvents:false, description:'', title:'', start:'', end:''})
   }
   displayEditForm = (id, title, start, end, description, date) => {
-    this.setState({displayAddForm: false, displayEditForm: true, eventId:id, title: title, start: start, end: end,description:description, date: date })
+    this.setState({displayAddForm: false, displayEditForm: true, eventId:id, title: title, start: start, end: end,description:description, date: date, showAllEvents:false })
   }
 
   renderEvents = (eventArray) => {
@@ -262,12 +262,14 @@ class App extends Component {
     } else if (this.state.monthNumber === 12){
       month = "December"
     }
-    if (this.state.showAllEvents && !this.state.displayEvents){
-      showHideButton = <button onClick={this.showAllEvents}>Hide All Events</button>
-      eventList = this.renderEvents(this.state.events)
-    } else if (!this.state.showAllEvents && !this.state.displayEvents) {
-      showHideButton = <button onClick={this.showAllEvents}>Show All Events</button>
-    }
+
+      if(this.state.showAllEvents){
+        showHideButton = <button onClick={this.showAllEvents}>Hide All Events</button>
+        eventList = this.renderEvents(this.state.events)
+      } else if (!this.state.showAllEvents && !this.state.displayEvents) {
+        showHideButton = <button onClick={this.showAllEvents}>Show All Events</button>
+      }
+
     if (this.state.displayAddForm){
       date = <h1>{this.state.date}</h1>
       eventList = this.renderEvents(this.state.dayEvents)
