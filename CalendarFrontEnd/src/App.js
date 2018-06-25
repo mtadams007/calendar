@@ -62,7 +62,7 @@ class App extends Component {
 
   editEvent = (event) => {
     event.preventDefault();
-    axios.put(this.api+`${this.state.eventId}`, {
+    axios.put(`${this.api}/${this.state.eventId}`, {
       start: this.state.start,
       end: this.state.end,
       title: this.state.title,
@@ -75,7 +75,7 @@ class App extends Component {
   }
 
   deleteEvent = (event) => {
-    axios.delete(this.api+`${this.state.eventId}`)
+    axios.delete(this.api+'/'+this.state.eventId)
     .then(response => {
     }).then(function(response){
     this.setState({update: true, isHighlight:false})
@@ -89,7 +89,7 @@ class App extends Component {
     if (element.length != 0) {
       element[0].classList.remove("highlight")
     }
-    this.setState({monthNumber: monthNumber, isHighlight: false})
+    this.setState({monthNumber: monthNumber, isHighlight: false, displayAddForm: false, displayEvents: false })
   }
 
   handleChangeStart = (event) => {
@@ -122,10 +122,6 @@ class App extends Component {
   }
 
   displayForm = (eventArray, date, highlight) => {
-    // let newHighlight
-    // if (this.state.isHighlight) {
-    //   newHighlight
-    // }
     this.setState({dayEvents: eventArray, displayEditForm: false, isHighlight: !this.state.isHighlight, dateToHighlight:highlight, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date, showAllEvents:false, description:'', title:'', start:'', end:''})
   }
   displayEditForm = (id, title, start, end, description, date) => {
@@ -231,10 +227,10 @@ class App extends Component {
       element[0].classList.remove("highlight")
     }
     if (this.state.monthNumber === 1) {
-      this.setState({monthNumber: 12, isHighlight: false})
+      this.setState({monthNumber: 12, isHighlight: false, displayAddForm: false, displayEvents: false})
     } else {
       let newMonthNumber = this.state.monthNumber - 1
-      this.setState({monthNumber: newMonthNumber, isHighlight: false})
+      this.setState({monthNumber: newMonthNumber, isHighlight: false, displayAddForm: false, displayEvents: false})
     }
   }
 
@@ -244,10 +240,10 @@ class App extends Component {
       element[0].classList.remove("highlight")
     }
     if (this.state.monthNumber === 12) {
-      this.setState({monthNumber: 1, isHighlight: false})
+      this.setState({monthNumber: 1, isHighlight: false, displayAddForm: false, displayEvents: false})
     } else {
       let newMonthNumber = this.state.monthNumber + 1
-      this.setState({monthNumber: newMonthNumber, isHighlight: false})
+      this.setState({monthNumber: newMonthNumber, isHighlight: false, displayAddForm: false, displayEvents: false})
     }
   }
 
