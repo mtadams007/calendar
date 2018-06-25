@@ -266,6 +266,7 @@ class App extends Component {
     if (this.state.update) {
       this.update()
     }
+    // decides whether or not to remove or add highlights on selected day
     let elementToRemove = document.getElementsByClassName('highlight');
     if (this.state.isHighlight) {
       let element = document.getElementById(this.state.dateToHighlight);
@@ -274,12 +275,14 @@ class App extends Component {
     else if (elementToRemove.length != 0) {
       elementToRemove[0].classList.remove("highlight")
     }
+    // defines components to render
     let showHideButton;
     let month;
     let addForm;
     let editForm;
     let eventList;
     let date;
+    // gives our display day for the month
     if (this.state.monthNumber === 1){
       month = "January"
     } else if (this.state.monthNumber === 2){
@@ -305,14 +308,14 @@ class App extends Component {
     } else if (this.state.monthNumber === 12){
       month = "December"
     }
-
+    // displays all events on calendar
     if(this.state.showAllEvents){
       showHideButton = <button onClick={this.showAllEvents}>Hide All Events</button>
       eventList = this.renderEvents(this.state.events)
     } else if (!this.state.showAllEvents ) {
       showHideButton = <button onClick={this.showAllEvents}>Show All Events</button>
     }
-
+    // decides whether or not to display forms
     if (this.state.displayAddForm){
       date = <h1>{this.state.date}</h1>
       eventList = this.renderEvents(this.state.dayEvents)
@@ -325,6 +328,7 @@ class App extends Component {
       eventList = this.renderEvents(this.state.dayEvents)
       showHideButton = null
     }
+    // here we wait for the api to load. 
     if (!this.state.isLoaded){
       return (
         <div>Loading...</div>
