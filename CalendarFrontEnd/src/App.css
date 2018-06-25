@@ -25,7 +25,7 @@ body {
 .grid {
   display: grid;
   grid-template-columns: 2fr 6fr 2fr;
-  grid-template-rows: 1fr 5fr;
+  /* grid-template-rows: 1fr 5fr; */
 }
 
 .App-title {
@@ -42,4 +42,8 @@ body {
   margin: 1.5em;
   background-color: #191414;
   color: white;
+}
+
+.content {
+  margin-top: 2em;
 }

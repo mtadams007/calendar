@@ -30,7 +30,7 @@ class App extends Component {
   update = () => {
     axios.get("http://localhost:9292/api/v1/events")
       .then(function(response){
-      this.setState({events: response.data, displayAddForm:false, displayEditForm: false, displayEvents: false, isLoaded: true, update: false, description: '', start:'',end:'', title:''})
+      this.setState({events: response.data, displayAddForm:false, displayEditForm: false, displayEvents: false, isLoaded: true, update: false, description: '', start:'',end:'', title:'', showAllEvents: false})
     }.bind(this))
   }
 
@@ -292,7 +292,7 @@ class App extends Component {
           <button className="switchMonth" onClick={this.previous}>Previous</button>
           <button className="switchMonth" onClick={this.next}>Next</button>
         </div>
-        <div id="eventList">
+        <div class="content">
           {showHideButton}
           {date}
           {eventList}
