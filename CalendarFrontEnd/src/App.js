@@ -89,7 +89,7 @@ class App extends Component {
 
   // shows all the events in the api
   showAllEvents = (event) => {
-    this.setState({showAllEvents:!this.state.showAllEvents})
+    this.setState({showAllEvents:!this.state.showAllEvents, isHighlight: false})
   }
 
   // changes the month by clicking on the month button
@@ -115,7 +115,7 @@ class App extends Component {
     this.setState({description: event.target.value});
   }
 
-  // this gets the events for a given day
+// this gets the events for a given day
   getEvent = (month, day) => {
     let eventArray = this.state.events
     let length = eventArray.length
@@ -135,7 +135,18 @@ class App extends Component {
 
   // this tells us to display a form and to highlight the day
   displayForm = (eventArray, date, highlight) => {
-    this.setState({dayEvents: eventArray, displayEditForm: false, isHighlight: !this.state.isHighlight, dateToHighlight:highlight, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date, showAllEvents:false, description:'', title:'', start:'', end:''})
+    let element = document.getElementsByClassName('highlight');
+    if (element.length != 0) {
+      element[0].classList.remove("highlight")
+    }
+    let isHighlight;
+    if (this.state.displayEditForm === true) {
+      isHighlight = true
+
+    } else {
+      isHighlight = !this.state.isHighlight
+    }
+    this.setState({dayEvents: eventArray, displayEditForm: false, isHighlight: isHighlight, dateToHighlight:highlight, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date, showAllEvents:false, description:'', title:'', start:'', end:''})
   }
   // displays the edit form by clicking on the event
   displayEditForm = (id, title, start, end, description, date) => {
@@ -328,7 +339,7 @@ class App extends Component {
       eventList = this.renderEvents(this.state.dayEvents)
       showHideButton = null
     }
-    // here we wait for the api to load. 
+    // here we wait for the api to load.
     if (!this.state.isLoaded){
       return (
         <div>Loading...</div>
