@@ -31,14 +31,16 @@ class App extends Component {
   }
 
   update = () => {
-    axios.get("http://localhost:9292/api/v1/events")
+    axios.get(this.api)
       .then(function(response){
       this.setState({events: response.data, displayAddForm:false, displayEditForm: false, displayEvents: false, isLoaded: true, update: false, description: '', start:'',end:'', title:''})
     }.bind(this))
   }
 
+  api = 'http://localhost:9292/api/v1/events/'
+
   componentDidMount() {
-    axios.get("http://localhost:9292/api/v1/events")
+    axios.get(this.api)
       .then(function(response){
       this.setState({events: response.data, isLoaded: true})
     }.bind(this))
@@ -46,7 +48,7 @@ class App extends Component {
 
   addEvent = (event) => {
     event.preventDefault();
-    axios.post("http://localhost:9292/api/v1/events", {
+    axios.post(this.api, {
       start: this.state.start,
       end: this.state.end,
       title: this.state.title,
@@ -60,7 +62,7 @@ class App extends Component {
 
   editEvent = (event) => {
     event.preventDefault();
-    axios.put(`http://localhost:9292/api/v1/events/${this.state.eventId}`, {
+    axios.put(this.api+`${this.state.eventId}`, {
       start: this.state.start,
       end: this.state.end,
       title: this.state.title,
@@ -73,7 +75,7 @@ class App extends Component {
   }
 
   deleteEvent = (event) => {
-    axios.delete(`http://localhost:9292/api/v1/events/${this.state.eventId}`)
+    axios.delete(this.api+`${this.state.eventId}`)
     .then(response => {
     }).then(function(response){
     this.setState({update: true, isHighlight:false})

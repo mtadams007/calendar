@@ -1,10 +1,10 @@
-## ReadMe
+## README
 
-This is a 2018 Calendar app for the Spotify TTP fellowship. The backend is an API built with Ruby on Rails. I chose to use React for the frontend so one could dynamically change months without reloading.
+This is a 2018 Calendar app for the Spotify TTP fellowship. The backend is an API built with Ruby on Rails. I chose to use React for the frontend so the user can dynamically change months without reloading.
 
 ## Features
 
-The calendar shows one event title per day but lists how many others are hidden. By clicking on a day one sees what events there are scheduled for that day. On the right of the calendar the option of adding an event also shows up. By clicking on a specific event one can edit it as well instead of adding a new one.
+The calendar shows one event title per day but lists how many others are hidden. By clicking on a day the user sees what events there are scheduled for that day. The current day gets highlighted as well. On the right of the calendar the option of adding an event also shows up. By clicking on a specific event one can edit it as well instead of adding a new one. One can navigate from month to month by clicking on the month buttons on top.
 
 ## Future improvements
 

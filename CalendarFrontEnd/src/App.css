@@ -16,8 +16,7 @@ body {
 .dayName {
   width:8vw;
   display: inline-block;
-  border: 1px #191414 solid;
-  margin: 0;
+  padding:  .25em 0;
   background-color: #191414;
   color: white;
 }
