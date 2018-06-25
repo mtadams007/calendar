@@ -9,6 +9,7 @@ const event = (props) => {
         <h2>{props.title}</h2>
         <h4>{props.start} - {props.end}</h4>
         <p>{props.description}</p>
+        <p>{props.date}</p>
       </div>
     </button>
   );

@@ -1,23 +1,34 @@
 .App {
   text-align: center;
 }
-
+body {
+  background-color: #1DB954;
+  color: #191414;
+}
 .header {
-  background-color: #222;
-  height: 10vh;
+  /* background-color: #191414; */
+  height: 12vh;
   grid-column: 1/4;
   padding: 20px;
+  color: white;
+}
+
+.dayName {
+  width:8vw;
+  display: inline-block;
+  padding:  .25em 0;
+  background-color: #191414;
   color: white;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 2fr 6fr 2fr;
-  grid-template-rows: 1fr 5fr;
+  /* grid-template-rows: 1fr 5fr; */
 }
 
 .App-title {
-  font-size: 1.5em;
+  font-size: 2em;
 }
 
 .App-intro {
@@ -25,6 +36,13 @@
 }
 
 .form {
-  border: 1px solid black;
+  /* border: 1px solid #191414; */
+  padding: 1em;
   margin: 1.5em;
+  background-color: #191414;
+  color: white;
+}
+
+.content {
+  margin-top: 2em;
 }
