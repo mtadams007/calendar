@@ -37,7 +37,7 @@ class App extends Component {
     }.bind(this))
   }
 
-  api = 'http://localhost:9292/api/v1/events/'
+  api = 'https://michael-calendar.herokuapp.com/api/v1/events'
 
   componentDidMount() {
     axios.get(this.api)
@@ -200,8 +200,6 @@ class App extends Component {
           dayClass = 'dayNumberDisplay'
         }
         let highlight = `a${dayNumber}`
-        console.log(highlight)
-
         let events = this.getEvent(this.state.monthNumber,dayNumber)
         let event;
         let length = events.length
@@ -243,7 +241,6 @@ class App extends Component {
   next = () => {
     let element = document.getElementsByClassName('highlight');
     if (element.length != 0) {
-
       element[0].classList.remove("highlight")
     }
     if (this.state.monthNumber === 12) {
