@@ -263,23 +263,24 @@ class App extends Component {
       month = "December"
     }
 
-      if(this.state.showAllEvents){
-        showHideButton = <button onClick={this.showAllEvents}>Hide All Events</button>
-        eventList = this.renderEvents(this.state.events)
-      } else if (!this.state.showAllEvents && !this.state.displayEvents) {
-        showHideButton = <button onClick={this.showAllEvents}>Show All Events</button>
-      }
+    if(this.state.showAllEvents){
+      showHideButton = <button onClick={this.showAllEvents}>Hide All Events</button>
+      eventList = this.renderEvents(this.state.events)
+    } else if (!this.state.showAllEvents ) {
+      showHideButton = <button onClick={this.showAllEvents}>Show All Events</button>
+    }
 
     if (this.state.displayAddForm){
       date = <h1>{this.state.date}</h1>
       eventList = this.renderEvents(this.state.dayEvents)
       addForm = <div className="form"><EventForm date={this.state.date} onSubmit={this.addEvent} submitValue="Add Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} /></div>
-
+      showHideButton = null
     } else if (this.state.displayEditForm) {
       editForm = <div className="form"><EventForm start={this.state.start} end={this.state.end} description={this.state.description} title={this.state.title} date={this.state.date} onSubmit={this.editEvent} submitValue="Edit Event" titleSubmit={this.handleChangeTitle} startSubmit={this.handleChangeStart} descriptionSubmit={this.handleChangeDescription} endSubmit={this.handleChangeEnd} />
       <button onClick={this.deleteEvent}>DELETE</button></div>
       date = <h1>{this.state.date}</h1>
       eventList = this.renderEvents(this.state.dayEvents)
+      showHideButton = null
     }
     if (!this.state.isLoaded){
       return (
