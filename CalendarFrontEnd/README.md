@@ -8,4 +8,4 @@ The calendar shows one event title per day but lists how many others are hidden.
 
 ## Future improvements
 
-I'm still fairly new to React so would like to make better usage of components to make the code more clean.
+I'm still fairly new to React but decided to challenge myself to use it because it seemed to be ideal for this project. I would like to make better usage of components to make the code more clean. I would like to dynamically change the months instead of hardcoding them for one full year. It would also be good to implement a weekly view. On the API in the future I would make options for what type of event (e.g holiday, work, personal, etc)
