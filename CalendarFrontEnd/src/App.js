@@ -24,7 +24,9 @@ class App extends Component {
     dayEvents: [
     ],
     events: [
-    ]
+    ],
+    isHighlight: false,
+    dateToHighlight: ''
   }
 
   update = () => {
@@ -109,8 +111,12 @@ class App extends Component {
     return allEvents
   }
 
-  displayForm = (eventArray, date) => {
-    this.setState({dayEvents: eventArray, displayEditForm: false, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date, showAllEvents:false, description:'', title:'', start:'', end:''})
+  displayForm = (eventArray, date, highlight) => {
+    // let newHighlight
+    // if (this.state.isHighlight) {
+    //   newHighlight
+    // }
+    this.setState({dayEvents: eventArray, displayEditForm: false, isHighlight: !this.state.isHighlight, dateToHighlight:highlight, displayAddForm: !this.state.displayAddForm, displayEvents: !this.state.displayEvents, date: date, showAllEvents:false, description:'', title:'', start:'', end:''})
   }
   displayEditForm = (id, title, start, end, description, date) => {
     this.setState({displayAddForm: false, displayEditForm: true, eventId:id, title: title, start: start, end: end,description:description, date: date, showAllEvents:false })
@@ -183,6 +189,8 @@ class App extends Component {
         } else {
           dayClass = 'dayNumberDisplay'
         }
+        let highlight = `a${dayNumber}`
+        console.log(highlight)
 
         let events = this.getEvent(this.state.monthNumber,dayNumber)
         let event;
@@ -199,7 +207,7 @@ class App extends Component {
            <Day dayClass={dayClass} dayNumber={dayNumber} event={event}/>)
        } else {
           days.push(
-            <Day dayClass={dayClass} dayNumber={dayNumber} event={event} click={()=>this.displayForm(events,date)}/>)
+            <Day dayClass={dayClass} highlight={highlight} dayNumber={dayNumber} event={event} click={()=>this.displayForm(events,date,highlight)}/>)
           }
           dayNumber++
       }
@@ -230,6 +238,13 @@ class App extends Component {
   render() {
     if (this.state.update) {
       this.update()
+    }
+    if (this.state.isHighlight) {
+      let element = document.getElementById(this.state.dateToHighlight);
+      element.classList.add("highlight")
+    } else if (this.state.dateToHighlight != '') {
+      let element = document.getElementsByClassName('highlight');
+      element[0].classList.remove("highlight")
     }
     let showHideButton;
     let month;
